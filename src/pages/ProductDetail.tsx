@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, Heart, Calendar, MapPin, Clock, Gift } from 'lucide-react';
+import VoucherForm from '@/components/VoucherForm';
 
 // Mock product data
 const mockProducts = [
@@ -95,8 +96,6 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
-  const [recipientName, setRecipientName] = useState('');
-  const [personalMessage, setPersonalMessage] = useState('');
   
   // Find the product with the matching ID
   const product = mockProducts.find(p => p.id === Number(id));
@@ -212,30 +211,6 @@ const ProductDetail = () => {
                       </div>
                     </div>
                     
-                    <div className="mb-6">
-                      <h3 className="text-lg font-medium mb-3">Personalize Your Gift</h3>
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Recipient's Name</label>
-                          <Input 
-                            type="text" 
-                            placeholder="Who is this gift for?"
-                            value={recipientName}
-                            onChange={(e) => setRecipientName(e.target.value)}
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Personal Message</label>
-                          <Textarea 
-                            placeholder="Add a personal message for the recipient"
-                            rows={3}
-                            value={personalMessage}
-                            onChange={(e) => setPersonalMessage(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
                     <div className="flex flex-col sm:flex-row gap-4">
                       <Button 
                         variant="outline"
@@ -259,6 +234,12 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
+          
+          {/* Voucher Form and Preview */}
+          <VoucherForm 
+            productName={product.name}
+            storeName={product.store}
+          />
         </div>
       </main>
       
