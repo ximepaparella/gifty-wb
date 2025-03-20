@@ -9,7 +9,8 @@ const FeaturesSection = () => {
       icon: Palette,
       title: "Beautiful Designs",
       description: "Create stunning gift vouchers that reflect your brand with our easy-to-use designer.",
-      delay: "delay-0"
+      delay: "delay-0",
+      highlight: true
     },
     {
       icon: CreditCard,
@@ -27,7 +28,8 @@ const FeaturesSection = () => {
       icon: GiftIcon,
       title: "Customizable",
       description: "Personalize each voucher with custom messages, imagery, and your unique branding.",
-      delay: "delay-300"
+      delay: "delay-300",
+      highlight: true
     },
     {
       icon: SmileIcon,
@@ -44,11 +46,14 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="section bg-gray-50">
+    <section id="features" className="section relative">
+      {/* Background blobs */}
+      <div className="blob-bg bg-gifty-100 w-[600px] h-[600px] top-[20%] right-[-300px]"></div>
+      
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
           <h2 className="text-3xl md:text-4xl font-display font-semibold text-gray-900 mb-4">
-            Everything you need for gift vouchers
+            Everything you need for <span className="text-gradient">gift vouchers</span>
           </h2>
           <p className="text-xl text-gray-600">
             Gifty makes it simple for small businesses to offer professional gift vouchers without the hassle.
@@ -63,6 +68,7 @@ const FeaturesSection = () => {
               title={feature.title}
               description={feature.description}
               delay={feature.delay}
+              highlight={feature.highlight}
             />
           ))}
         </div>

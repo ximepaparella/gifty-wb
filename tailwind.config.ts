@@ -26,16 +26,16 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				gifty: {
-					50: '#f0f9ff',
-					100: '#e0f2fe',
-					200: '#bae6fd',
-					300: '#7dd3fc',
-					400: '#38bdf8',
-					500: '#0ea5e9',
-					600: '#0284c7',
-					700: '#0369a1',
-					800: '#075985',
-					900: '#0c4a6e',
+					50: '#fbf3ff',
+					100: '#f5e5ff',
+					200: '#eaceff',
+					300: '#d9a4ff',
+					400: '#c168ff',
+					500: '#ab38ff',
+					600: '#9617f0',
+					700: '#8010d0',
+					800: '#6a11aa',
+					900: '#591589',
 				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
@@ -106,6 +106,14 @@ export default {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-10px)' },
 				},
+				'slide-in': {
+					'0%': { transform: 'translateX(-100%)', opacity: '0' },
+					'100%': { transform: 'translateX(0)', opacity: '1' },
+				},
+				'rotate-in': {
+					'0%': { transform: 'rotate(-5deg) scale(0.9)', opacity: '0' },
+					'100%': { transform: 'rotate(0) scale(1)', opacity: '1' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -114,6 +122,8 @@ export default {
 				'fade-up': 'fade-up 0.7s ease-out',
 				'pulse-soft': 'pulse-soft 3s infinite ease-in-out',
 				'float': 'float 6s infinite ease-in-out',
+				'slide-in': 'slide-in 0.8s ease-out',
+				'rotate-in': 'rotate-in 0.8s ease-out',
 			},
 			fontFamily: {
 				'sans': ['Inter', 'sans-serif'],
@@ -122,9 +132,16 @@ export default {
 			boxShadow: {
 				'soft': '0 5px 30px -15px rgba(0, 0, 0, 0.15)',
 				'hover': '0 10px 40px -15px rgba(0, 0, 0, 0.2)',
+				'neon': '0 0 15px rgba(171, 56, 255, 0.5)',
+				'neon-strong': '0 0 25px rgba(171, 56, 255, 0.8)',
 			},
 			backdropBlur: {
 				'xs': '2px',
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+				'gradient-diagonal': 'linear-gradient(45deg, var(--tw-gradient-stops))',
 			},
 		}
 	},

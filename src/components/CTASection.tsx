@@ -11,13 +11,16 @@ const CTASection = () => {
   ];
 
   return (
-    <section id="get-started" className="py-20 md:py-28">
+    <section id="get-started" className="py-20 md:py-28 relative">
+      {/* Background blobs */}
+      <div className="blob-bg bg-gifty-200 w-[500px] h-[500px] bottom-[-200px] left-[10%]"></div>
+      
       <div className="container-custom">
-        <div className="bg-white rounded-2xl shadow-soft overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-soft overflow-hidden gradient-card">
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
               <h2 className="text-3xl md:text-4xl font-display font-semibold text-gray-900 mb-4 animate-fade-up">
-                Ready to offer gift vouchers?
+                Ready to offer <span className="text-gradient">gift vouchers?</span>
               </h2>
               
               <p className="text-xl text-gray-600 mb-8 animate-fade-up delay-100">
@@ -45,7 +48,7 @@ const CTASection = () => {
             </div>
             
             <div className="w-full md:w-1/2 bg-gifty-500 flex items-center justify-center p-8 md:p-0">
-              <div className="max-w-md animate-fade-up">
+              <div className="max-w-md animate-fade-up image-tilt">
                 <img 
                   src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=800&auto=format&fit=crop&q=80&ixlib=rb-4.0.3" 
                   alt="Gift voucher example" 
