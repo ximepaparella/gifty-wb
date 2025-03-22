@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Gift, Instagram, Twitter, Facebook, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -35,7 +36,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
               <li><a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors">How it Works</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+              <li><Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Templates</a></li>
             </ul>
           </div>

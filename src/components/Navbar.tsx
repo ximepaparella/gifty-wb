@@ -55,6 +55,12 @@ const Navbar = () => {
             Testimonials
           </Link>
           <Link 
+            to="/pricing" 
+            className="text-gray-600 hover:text-gifty-600 transition-colors duration-300"
+          >
+            Pricing
+          </Link>
+          <Link 
             to="/store" 
             className="text-gray-600 hover:text-gifty-600 transition-colors duration-300"
           >
