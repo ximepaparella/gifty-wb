@@ -1,14 +1,11 @@
-
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, Heart, Calendar, MapPin, Clock, Gift } from 'lucide-react';
-import VoucherForm from '@/components/VoucherForm';
+import { Heart, MapPin, Clock, Calendar, Gift } from 'lucide-react';
+import VoucherFormModal from '@/components/VoucherFormModal';
 
 // Mock product data
 const mockProducts = [
@@ -95,7 +92,7 @@ const mockProducts = [
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
-  const [quantity, setQuantity] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Find the product with the matching ID
   const product = mockProducts.find(p => p.id === Number(id));
@@ -108,20 +105,8 @@ const ProductDetail = () => {
     );
   }
 
-  const handleAddToCart = () => {
-    toast({
-      title: "Added to Cart!",
-      description: `${quantity} voucher(s) for ${product.name} added to your cart.`,
-      duration: 3000,
-    });
-  };
-
   const handleBuyNow = () => {
-    toast({
-      title: "Processing Your Order",
-      description: "Redirecting to checkout...",
-      duration: 3000,
-    });
+    setIsModalOpen(true);
   };
 
   return (
@@ -194,35 +179,11 @@ const ProductDetail = () => {
                   <div className="border-t border-gray-200 pt-6">
                     <div className="flex justify-between items-center mb-6">
                       <div className="text-3xl font-bold text-gray-900">${product.price}</div>
-                      <div className="flex items-center gap-2">
-                        <button 
-                          className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors"
-                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        >
-                          -
-                        </button>
-                        <span className="w-8 text-center">{quantity}</span>
-                        <button 
-                          className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors"
-                          onClick={() => setQuantity(quantity + 1)}
-                        >
-                          +
-                        </button>
-                      </div>
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex justify-center">
                       <Button 
-                        variant="outline"
-                        size="lg"
-                        className="flex-1 gap-2"
-                        onClick={handleAddToCart}
-                      >
-                        <ShoppingCart className="h-5 w-5" />
-                        Add to Cart
-                      </Button>
-                      <Button 
-                        className="flex-1 bg-gifty-500 hover:bg-gifty-600 text-white"
+                        className="w-full md:w-auto md:min-w-[200px] bg-gifty-500 hover:bg-gifty-600 text-white"
                         size="lg"
                         onClick={handleBuyNow}
                       >
@@ -234,14 +195,14 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
-          
-          {/* Voucher Form and Preview */}
-          <VoucherForm 
-            productName={product.name}
-            storeName={product.store}
-          />
         </div>
       </main>
+      
+      <VoucherFormModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={product}
+      />
       
       <Footer />
     </div>
