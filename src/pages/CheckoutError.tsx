@@ -17,11 +17,11 @@ const CheckoutError = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       
       <main className="flex-grow pt-24 pb-16">
-        <div className="container-custom max-w-2xl">
+        <div className="container mx-auto px-4 max-w-2xl">
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-100 mb-6">
               <AlertTriangle className="h-12 w-12 text-red-600" />
@@ -31,7 +31,7 @@ const CheckoutError = () => {
             <p className="text-gray-600">{errorReason || "Please try again or contact customer support for assistance."}</p>
           </div>
           
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden border mb-8 p-6">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden border mb-8 p-6">
             <h2 className="text-xl font-semibold mb-4">What happened?</h2>
             <p className="mb-4">
               {errorDetails || "Your payment could not be processed. This could be due to:"}
