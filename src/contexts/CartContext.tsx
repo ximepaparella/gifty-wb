@@ -1,21 +1,29 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 export interface CartItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
   quantity: number;
   image: string;
   store: string;
+  voucherData?: {
+    senderName: string;
+    senderEmail: string;
+    receiverName: string;
+    receiverEmail: string;
+    message: string;
+    template: string;
+    expirationDate: string;
+  };
 }
 
 interface CartContextType {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -68,11 +76,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const removeItem = (id: number) => {
+  const removeItem = (id: string) => {
     setItems(currentItems => currentItems.filter(item => item.id !== id));
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
       removeItem(id);
       return;

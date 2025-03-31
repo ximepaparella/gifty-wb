@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
@@ -11,6 +10,8 @@ import { Template1, Template2, Template3, Template4, Template5 } from './templat
 import { Mail, User } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import { useStore } from '@/hooks/useStores';
+import type { Product } from '@/lib/api/types';
 
 export interface VoucherData {
   sender_name: string;
@@ -35,7 +36,7 @@ interface VoucherFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   product: {
-    id: number;
+    id: string;
     name: string;
     store: string;
     price: number;
@@ -57,13 +58,13 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
     template: '1',
     productName: product.name,
     storeName: product.store,
-    storeAddress: '123 Main St, Anytown, USA',
-    storeEmail: 'contact@example.com',
-    storePhone: '(555) 123-4567',
-    storeSocial: '@store_social',
+    storeAddress: 'Loading store details...',
+    storeEmail: 'Loading store details...',
+    storePhone: 'Loading store details...',
+    storeSocial: 'Loading store details...',
     storeLogo: '/placeholder.svg',
-    expirationDate: '12/31/2024',
-    code: 'GIFT123456',
+    expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 year from now
+    code: 'GIFT' + Math.random().toString(36).substring(2, 8).toUpperCase(),
     qrCode: ''
   });
 
@@ -91,6 +92,15 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
       quantity: 1,
       image: product.image,
       store: product.store,
+      voucherData: {
+        senderName: voucherData.sender_name,
+        senderEmail: voucherData.sender_email,
+        receiverName: voucherData.receiver_name,
+        receiverEmail: voucherData.receiver_email,
+        message: voucherData.message,
+        template: voucherData.template,
+        expirationDate: voucherData.expirationDate
+      }
     });
     
     toast({
@@ -145,6 +155,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
                 value={voucherData.sender_name}
                 onChange={handleInputChange}
                 placeholder="Your name"
+                required
               />
             </div>
             
@@ -159,6 +170,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
                 onChange={handleInputChange}
                 placeholder="your.email@example.com"
                 type="email"
+                required
               />
             </div>
             
@@ -172,6 +184,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
                 value={voucherData.receiver_name}
                 onChange={handleInputChange}
                 placeholder="Recipient's name"
+                required
               />
             </div>
             
@@ -186,6 +199,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
                 onChange={handleInputChange}
                 placeholder="recipient.email@example.com"
                 type="email"
+                required
               />
             </div>
             
@@ -197,6 +211,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
                 onChange={handleInputChange}
                 placeholder="Add a personal message for the recipient..."
                 rows={4}
+                required
               />
             </div>
             
@@ -233,6 +248,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
           <Button 
             className="bg-gifty-500 hover:bg-gifty-600 text-white"
             onClick={handleContinue}
+            disabled={!voucherData.sender_name || !voucherData.sender_email || !voucherData.receiver_name || !voucherData.receiver_email || !voucherData.message}
           >
             Continue to Checkout
           </Button>
