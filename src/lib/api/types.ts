@@ -15,9 +15,22 @@ export interface Product {
 export interface Store {
   _id: string;
   name: string;
-  logo?: string;
-  description?: string;
-  isActive: boolean;
+  ownerId: string;
+  email: string;
+  phone: string;
+  address: string;
+  logo: string;
+  social: {
+    instagram?: string | null;
+    facebook?: string | null;
+    tiktok?: string | null;
+    youtube?: string | null;
+    others: Array<{
+      name: string;
+      url: string;
+      _id: string;
+    }>;
+  };
   createdAt: string;
   updatedAt: string;
   __v: number;
