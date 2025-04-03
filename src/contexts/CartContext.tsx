@@ -7,7 +7,8 @@ export interface CartItem {
   price: number;
   quantity: number;
   image: string;
-  store: string;
+  store: string;  // store name for display
+  storeId: string; // store MongoDB ID for API
   voucherData?: {
     senderName: string;
     senderEmail: string;

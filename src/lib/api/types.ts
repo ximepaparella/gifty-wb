@@ -15,9 +15,23 @@ export interface Product {
 export interface Store {
   _id: string;
   name: string;
-  description: string;
-  logo: string;
+  logo?: string;
+  description?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface Customer {
+  _id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
   address: string;
+  city: string;
+  zipCode?: string;
+  country: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -41,10 +55,38 @@ export interface Order {
     senderEmail: string;
     receiverName: string;
     receiverEmail: string;
-    message: string;
-    template: string;
+    message?: string;
+    template?: string;
+    code?: string;
+    isRedeemed?: boolean;
+    redeemedAt?: string;
   };
+  status: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
+}
+
+export type VoucherTemplate = 'template1' | 'template2' | 'template3' | 'template4' | 'template5';
+
+export interface CreateOrderPayload {
+  customerId: string;
+  paymentDetails: {
+    paymentId: string;
+    paymentStatus: string;
+    paymentEmail: string;
+    amount: number;
+    provider: string;
+  };
+  voucher: {
+    storeId: string;
+    productId: string;
+    expirationDate: string;
+    senderName: string;
+    senderEmail: string;
+    receiverName: string;
+    receiverEmail: string;
+    message?: string;
+    template: VoucherTemplate;
+  };
 } 

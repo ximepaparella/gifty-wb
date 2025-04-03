@@ -132,9 +132,10 @@ const ProductDetail = () => {
         product={{
           id: product._id,
           name: product.name,
-          store: store?.name || 'Unknown Store',
           price: product.price,
-          image: product.image || '/placeholder.jpg'
+          image: product.image || '/placeholder.jpg',
+          store: store?.name || 'Unknown Store',
+          storeId: store?._id || product.storeId
         }}
       />
       

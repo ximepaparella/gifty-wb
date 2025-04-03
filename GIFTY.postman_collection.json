@@ -1,0 +1,1948 @@
+{
+	"info": {
+		"_postman_id": "971cb0c1-6ee3-40fd-81b3-62280c0f8d49",
+		"name": "GIFTY",
+		"description": "API endpoints for user management in the Gifty application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9245154"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Setup First Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Admin User\",\n    \"email\": \"admin@gifty.com\",\n    \"password\": \"Admin1234!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/setup-admin",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"setup-admin"
+							]
+						},
+						"description": "Create the first admin user (only works when no users exist in the system)"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gifty.com\",\n    \"password\": \"Admin1234!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login with user credentials to get an authentication token"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication related endpoints"
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users?page=1&limit=10&sort=createdAt:desc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of items per page"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt:desc",
+									"description": "Sort field and direction (field:asc|desc)"
+								}
+							]
+						},
+						"description": "Get a paginated list of all users (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						},
+						"description": "Get a specific user by ID (admin or store_manager)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Customer\",\n    \"email\": \"customer@example.com\",\n    \"password\": \"Customer1234!\",\n    \"role\": \"customer\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Create a new user (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"name\": \"Administrator\",\n\"email\": \"admin@gifty.com\",\n\"role\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						},
+						"description": "Update an existing user (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						},
+						"description": "Delete a user (admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "User management endpoints"
+		},
+		{
+			"name": "Stores",
+			"item": [
+				{
+					"name": "Create Store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"Tienda Uno\",\n    \"ownerId\": \"67c3d1bc6128baeedbf02855\",\n    \"email\": \"maria@t2iendauno.com\",\n    \"phone\": \"+5493314484\",\n    \"address\": \"Avenida 123, Argentina\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Stores",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/stores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Store by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/stores/{{storeId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"{{storeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Tienda Uno\",\n    \"ownerId\": \"67c3d1bc6128baeedbf02855\",\n    \"email\": \"maria@tiendauno.com\",\n    \"phone\": \"+5493314484\",\n    \"address\": \"Avenida 123, Argentina 2\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores/{{storeId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"{{storeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/stores/{{storeId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"{{storeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stores by Owner ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/stores/{{userId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stores",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"storeId\": \"{{storeId}}\",\n    \"name\": \"New Product\",\n    \"description\": \"Product description\",\n    \"price\": 99.99,\n    \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products/{{productId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"{{productId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"storeId\": \"67c3e2bf5cbc5dc93de4a69a\",\n            \"name\": \"Masajes de Pies\",\n            \"description\": \"This is an example product description\",\n            \"price\": 29,\n            \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/{{productId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"{{productId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products/{{productId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"{{productId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products by Store ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products/store/{{storeId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"store",
+								"{{storeId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vouchers",
+			"item": [
+				{
+					"name": "Create Voucher",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n     \"storeId\": \"67c3e2d45cbc5dc93de4a69d\",\n            \"productId\": \"67c3e2f75cbc5dc93de4a6a7\",\n            \"customerId\": \"67c3e2925cbc5dc93de4a693\",\n            \"amount\": 30,\n            \"status\": \"active\",\n            \"expirationDate\": \"2025-06-03T00:00:00.000Z\",\n            \"qrCode\": \"data:image/png;base64,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\",\n            \"senderName\": \"Ximena\",\n            \"senderEmail\": \"ximena@ximena.com\",\n            \"receiverName\": \"Daniela\",\n            \"receiverEmail\": \"daniela@daniela.com\",\n            \"message\": \"Test de mensaje\",\n            \"template\": \"template1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/vouchers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Vouchers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vouchers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Voucher by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vouchers/{{voucherId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers",
+								"{{voucherId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Voucher by Code",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vouchers/code/{{voucherCode}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers",
+								"code",
+								"{{voucherCode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vouchers by Store ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vouchers/store/{{storeId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers",
+								"store",
+								"{{storeId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vouchers by Customer Email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vouchers/customer/{{customerEmail}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers",
+								"customer",
+								"{{customerEmail}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Voucher",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"expirationDate\": \"2025-12-31T23:59:59Z\",\n    \"message\": \"Updated message for your gift!\",\n    \"template\": \"christmas\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/vouchers/{{voucherId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers",
+								"{{voucherId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Voucher",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vouchers/{{voucherId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers",
+								"{{voucherId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Redeem Voucher",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vouchers/code/{{voucherCode}}/redeem",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vouchers",
+								"code",
+								"{{voucherCode}}",
+								"redeem"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "Get All Customers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/customers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"customers"
+							]
+						},
+						"description": "Retrieve all customers (Requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/customers/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"customers",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{customer_id}}",
+									"description": "ID of the customer to retrieve"
+								}
+							]
+						},
+						"description": "Retrieve a customer by their ID (Requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Customer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"John Doe (New Customer)\",\n    \"email\": \"john.new.customer@example.com\",\n    \"phoneNumber\": \"+1987654321\",\n    \"address\": \"123 Customer Ln\",\n    \"city\": \"Custoville\",\n    \"zipCode\": \"CUST01\",\n    \"country\": \"Customerland\",\n    \"userId\": null \n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"customers"
+							]
+						},
+						"description": "Create a new customer (Requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"John Doe (Updated\",\n    \"phoneNumber\": \"+11122233344\",\n    \"city\": \"Updated City\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customers/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"customers",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{customer_id}}",
+									"description": "ID of the customer to update"
+								}
+							]
+						},
+						"description": "Update an existing customer (Requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/customers/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"customers",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{customer_id}}",
+									"description": "ID of the customer to delete"
+								}
+							]
+						},
+						"description": "Delete a customer (Requires authentication)"
+					},
+					"response": []
+				}
+			],
+			"description": "Customer management endpoints"
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Retrieve all orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order to retrieve"
+								}
+							]
+						},
+						"description": "Retrieve an order by its ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders By Customer ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/customer/:customerId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"customer",
+								":customerId"
+							],
+							"variable": [
+								{
+									"key": "customerId",
+									"value": "{{customer_id}}",
+									"description": "ID of the customer"
+								}
+							]
+						},
+						"description": "Retrieve orders by customer ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By Voucher Code",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/voucher/:code",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"voucher",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{voucher_code}}",
+									"description": "Voucher code"
+								}
+							]
+						},
+						"description": "Retrieve an order by voucher code"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customerId\": \"{{customer_id}}\",\n    \"paymentDetails\": {\n        \"paymentId\": \"pay_123456789\",\n        \"paymentStatus\": \"completed\",\n        \"paymentEmail\": \"customer@example.com\",\n        \"amount\": 50,\n        \"provider\": \"stripe\"\n    },\n    \"voucher\": {\n        \"storeId\": \"{{store_id}}\",\n        \"productId\": \"{{product_id}}\",\n        \"expirationDate\": \"2023-12-31T23:59:59Z\",\n        \"senderName\": \"John Doe\",\n        \"senderEmail\": \"john.doe@example.com\",\n        \"receiverName\": \"Jane Smith\",\n        \"receiverEmail\": \"jane.smith@example.com\",\n        \"message\": \"Happy Birthday! Enjoy your gift!\",\n        \"template\": \"birthday\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Create a new order"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customerId\": \"{{customer_id}}\",\n    \"paymentDetails\": {\n        \"paymentId\": \"pay_updated123456\",\n        \"paymentStatus\": \"completed\",\n        \"paymentEmail\": \"updated@example.com\",\n        \"amount\": 75,\n        \"provider\": \"stripe\"\n    },\n    \"voucher\": {\n        \"storeId\": \"{{store_id}}\",\n        \"productId\": \"{{product_id}}\",\n        \"expirationDate\": \"2024-06-30T23:59:59Z\",\n        \"senderName\": \"Updated Sender\",\n        \"senderEmail\": \"updated.sender@example.com\",\n        \"receiverName\": \"Updated Receiver\",\n        \"receiverEmail\": \"updated.receiver@example.com\",\n        \"message\": \"Updated message for the gift voucher\",\n        \"template\": \"general\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order to update"
+								}
+							]
+						},
+						"description": "Update an existing order"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order to delete"
+								}
+							]
+						},
+						"description": "Delete an order"
+					},
+					"response": []
+				},
+				{
+					"name": "Redeem Voucher",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/voucher/:code/redeem",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"voucher",
+								":code",
+								"redeem"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{voucher_code}}",
+									"description": "Voucher code to redeem"
+								}
+							]
+						},
+						"description": "Redeem a voucher by its code"
+					},
+					"response": []
+				},
+				{
+					"name": "Redeem Voucher by QR Code",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/voucher/:code/redeem",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"voucher",
+								":code",
+								"redeem"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{voucher_code}}",
+									"description": "Voucher code from QR scan"
+								}
+							]
+						},
+						"description": "Redeem a voucher by scanning its QR code. The QR code contains a URL with the voucher code, and this endpoint is used to process that redemption."
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Voucher Emails",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/:id/resend-emails",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"resend-emails"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order"
+								}
+							]
+						},
+						"description": "Resend voucher emails for an order"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Voucher Emails with PDFs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/:id/send-voucher-emails",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"send-voucher-emails"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order"
+								}
+							]
+						},
+						"description": "Send all voucher emails with PDF attachments"
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Customer Email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/:id/resend-customer-email",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"resend-customer-email"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order"
+								}
+							]
+						},
+						"description": "Resend voucher email only to the customer with PDF attachment"
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Receiver Email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/:id/resend-receiver-email",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"resend-receiver-email"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order"
+								}
+							]
+						},
+						"description": "Resend voucher email only to the receiver with PDF attachment"
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Store Email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/:id/resend-store-email",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"resend-store-email"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order"
+								}
+							]
+						},
+						"description": "Resend voucher email only to the store with PDF attachment"
+					},
+					"response": []
+				},
+				{
+					"name": "Download Voucher PDF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/:id/download-pdf",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"download-pdf"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{order_id}}",
+									"description": "ID of the order"
+								}
+							]
+						},
+						"description": "Download a PDF version of the voucher"
+					},
+					"response": []
+				}
+			],
+			"description": "Order management endpoints"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-save the auth token from login response",
+					"if (pm.response.code === 200 && pm.info.requestName === \"Login\") {",
+					"    const responseJson = pm.response.json();",
+					"    if (responseJson.status === 'success' && responseJson.data && responseJson.data.token) {",
+					"        pm.environment.set(\"auth_token\", responseJson.data.token);",
+					"        console.log(\"Auth token saved to environment\");",
+					"        ",
+					"        // Also save the user ID if available",
+					"        if (responseJson.data.user && responseJson.data.user.id) {",
+					"            pm.environment.set(\"user_id\", responseJson.data.user.id);",
+					"            console.log(\"User ID saved to environment\");",
+					"        }",
+					"    }",
+					"}",
+					"",
+					"// Save user ID from create user response",
+					"if ((pm.response.code === 201) && ",
+					"    (pm.info.requestName === \"Create User\" || pm.info.requestName === \"Setup First Admin\")) {",
+					"    const responseJson = pm.response.json();",
+					"    if (responseJson.status === 'success' && responseJson.data && responseJson.data.id) {",
+					"        pm.environment.set(\"user_id\", responseJson.data.id);",
+					"        console.log(\"Created user ID saved to environment\");",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

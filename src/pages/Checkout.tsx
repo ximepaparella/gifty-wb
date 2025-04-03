@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { useCart } from '@/contexts/CartContext';
+import { useCart, CartItem } from '../contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,8 +16,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { CreditCard, Building, Check, Landmark, Banknote, ArrowRight, ArrowLeft } from 'lucide-react';
+import { customerService, orderService } from '../lib/api/services';
+import { CreateOrderPayload, Store, VoucherTemplate } from '../lib/api/types';
+import { format } from 'date-fns';
 
 type CheckoutStep = 'customer-info' | 'payment' | 'confirmation';
 
@@ -33,9 +36,17 @@ interface CustomerInfo {
 
 type PaymentMethod = 'cash' | 'transfer' | 'mercadopago';
 
+interface CheckoutVoucherData {
+  senderName: string;
+  senderEmail: string;
+  receiverName: string;
+  receiverEmail: string;
+  message?: string;
+  template: string;
+}
+
 const Checkout = () => {
   const [currentStep, setCurrentStep] = useState<CheckoutStep>('customer-info');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     fullName: '',
     email: '',
@@ -49,8 +60,33 @@ const Checkout = () => {
   
   const { items, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
-  const { toast } = useToast();
   
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (items.length === 0) {
+      toast.error('Your cart is empty. Redirecting to store.');
+      navigate('/store');
+      return;
+    }
+    if (items.length > 1) {
+      toast.error('Checkout currently supports only one item. Redirecting to cart.');
+      navigate('/cart');
+      return;
+    }
+
+    const item = items[0];
+    const voucherDetails = item?.voucherData as CheckoutVoucherData | undefined;
+    if (voucherDetails) {
+      setCustomerInfo(prev => ({
+        ...prev,
+        fullName: voucherDetails.senderName || prev.fullName,
+        email: voucherDetails.senderEmail || prev.email
+      }));
+    }
+  }, [items, navigate]);
+
   const handleCustomerInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setCustomerInfo(prev => ({
@@ -60,28 +96,59 @@ const Checkout = () => {
   };
   
   const validateCustomerInfo = () => {
-    // Simple validation for required fields
+    // Required fields validation
     const requiredFields = ['fullName', 'email', 'phone', 'address', 'city', 'country'];
     const missingFields = requiredFields.filter(field => !customerInfo[field as keyof CustomerInfo]);
     
     if (missingFields.length > 0) {
-      toast({
-        title: "Missing information",
-        description: `Please fill in all required fields.`,
-        variant: "destructive",
-      });
+      const formattedFields = missingFields.map(field => 
+        field.replace(/([A-Z])/g, ' $1').toLowerCase()
+      ).join(', ');
+      toast.error(`Required fields missing: ${formattedFields}`);
       return false;
     }
     
-    // Basic email validation
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(customerInfo.email)) {
-      toast({
-        title: "Invalid email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
+      toast.error('Please enter a valid email address');
       return false;
+    }
+    
+    // Phone validation (at least 7 digits)
+    const phoneDigits = customerInfo.phone.replace(/\D/g, '');
+    if (phoneDigits.length < 7) {
+      toast.error('Phone number must have at least 7 digits');
+      return false;
+    }
+    
+    // Address validation (minimum length)
+    if (customerInfo.address.trim().length < 7) {
+      toast.error('Address must be at least 7 characters long');
+      return false;
+    }
+    
+    // City validation (no numbers or special characters)
+    const cityRegex = /^[a-zA-Z\s\-']+$/;
+    if (!cityRegex.test(customerInfo.city)) {
+      toast.error('City name should only contain letters, spaces, hyphens, and apostrophes');
+      return false;
+    }
+    
+    // Country validation (no numbers or special characters)
+    const countryRegex = /^[a-zA-Z\s\-']+$/;
+    if (!countryRegex.test(customerInfo.country)) {
+      toast.error('Country name should only contain letters, spaces, hyphens, and apostrophes');
+      return false;
+    }
+    
+    // Zip code validation (if provided)
+    if (customerInfo.zipCode) {
+      const zipRegex = /^[a-zA-Z0-9\s-]{3,10}$/;
+      if (!zipRegex.test(customerInfo.zipCode)) {
+        toast.error('Invalid zip/postal code format');
+        return false;
+      }
     }
     
     return true;
@@ -103,35 +170,125 @@ const Checkout = () => {
       setCurrentStep('payment');
     }
   };
-  
-  const handleSubmitOrder = () => {
-    // Simulate a payment process
-    const isSuccess = Math.random() > 0.2; // 80% success rate for demo purposes
-    
-    if (isSuccess) {
-      // Clear the cart on successful order
-      clearCart();
-      // Redirect to success page
-      navigate('/checkout/success', { 
-        state: { 
-          orderInfo: {
-            items,
-            totalPrice,
-            customerInfo,
-            paymentMethod,
-            orderId: `ORD-${Date.now()}`,
-            orderDate: new Date().toISOString(),
-          } 
-        } 
+
+  const handleSubmit = async () => {
+    if (items.length !== 1) {
+      toast.error('Invalid cart state for checkout.');
+      return;
+    }
+
+    setIsProcessing(true);
+    setError(null);
+
+    try {
+      const cartItem = items[0];
+      const voucherDetails = cartItem?.voucherData as CheckoutVoucherData | undefined;
+
+      if (!voucherDetails || !cartItem.store) {
+        throw new Error('Voucher details or Store ID missing.');
+      }
+
+      // Validate emails before proceeding
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(voucherDetails.senderEmail)) {
+        throw new Error('Sender email is invalid');
+      }
+      if (!emailRegex.test(voucherDetails.receiverEmail)) {
+        throw new Error('Receiver email is invalid');
+      }
+
+      // Get or create customer using the new endpoint
+      const customer = await customerService.getOrCreate({
+        fullName: customerInfo.fullName,
+        email: customerInfo.email,
+        phoneNumber: customerInfo.phone,
+        address: customerInfo.address,
+        city: customerInfo.city,
+        zipCode: customerInfo.zipCode,
+        country: customerInfo.country,
+        userId: null, // We don't have a user ID in this context
       });
-    } else {
-      // Redirect to error page
+
+      // Convert template number to proper format (e.g., "5" to "template5")
+      const templateNumber = voucherDetails.template.replace(/\D/g, '');
+      const formattedTemplate = `template${templateNumber}` as VoucherTemplate;
+
+      const paymentDetails = {
+        paymentId: `mock_${Date.now()}`,
+        paymentStatus: 'completed',
+        paymentEmail: customerInfo.email,
+        amount: totalPrice,
+        provider: paymentMethod,
+      };
+
+      const expirationDate = new Date();
+      expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+
+      const orderPayload: CreateOrderPayload = {
+        customerId: customer._id,
+        paymentDetails,
+        voucher: {
+          storeId: cartItem.storeId,
+          productId: cartItem.id,
+          expirationDate: expirationDate.toISOString(),
+          senderName: voucherDetails.senderName,
+          senderEmail: voucherDetails.senderEmail,
+          receiverName: voucherDetails.receiverName,
+          receiverEmail: voucherDetails.receiverEmail,
+          message: voucherDetails.message || '',
+          template: formattedTemplate,
+        },
+      };
+
+      const order = await orderService.create(orderPayload);
+
+      // Prepare order info for success page
+      const orderInfo = {
+        orderId: order._id,
+        orderDate: order.createdAt,
+        customerInfo: {
+          fullName: customerInfo.fullName,
+          email: customerInfo.email,
+          phone: customerInfo.phone,
+          address: customerInfo.address,
+          city: customerInfo.city,
+          zipCode: customerInfo.zipCode,
+          country: customerInfo.country,
+        },
+        items: items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image || '/placeholder.png',
+          store: item.store || 'N/A'
+        })),
+        totalPrice,
+        paymentMethod
+      };
+
+      toast.success('Order placed successfully!');
+      clearCart();
+      navigate('/checkout/success', { 
+        state: { orderInfo },
+        replace: true 
+      });
+
+    } catch (err: any) {
+      console.error('Checkout failed:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'An unexpected error occurred during checkout.';
+      setError(errorMessage);
+      
+      // Navigate to error page with error details
       navigate('/checkout/error', { 
         state: { 
-          error: "Payment processing failed",
-          reason: "The payment could not be processed. Please try again or use a different payment method." 
-        } 
+          error: errorMessage,
+          reason: err.response?.data?.message || 'Please try again or contact customer support.'
+        },
+        replace: true 
       });
+    } finally {
+      setIsProcessing(false);
     }
   };
   
@@ -142,8 +299,8 @@ const Checkout = () => {
           <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep === 'customer-info' ? 'bg-gifty-500 text-white' : 'bg-white text-gifty-500 border border-gifty-500'}`}>
             1
           </div>
-          <div className={`h-1 w-12 sm:w-24 ${currentStep === 'customer-info' ? 'bg-gray-300' : 'bg-gifty-500'}`}></div>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep === 'payment' ? 'bg-gifty-500 text-white' : currentStep === 'confirmation' ? 'bg-white text-gifty-500 border border-gifty-500' : 'bg-white text-gray-400 border border-gray-300'}`}>
+          <div className={`h-1 w-12 sm:w-24 ${currentStep !== 'customer-info' ? 'bg-gifty-500' : 'bg-gray-300'}`}></div>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep === 'payment' ? 'bg-gifty-500 text-white' : currentStep === 'confirmation' ? 'bg-gifty-500 text-white' : 'bg-white text-gray-400 border border-gray-300'}`}>
             2
           </div>
           <div className={`h-1 w-12 sm:w-24 ${currentStep === 'confirmation' ? 'bg-gifty-500' : 'bg-gray-300'}`}></div>
@@ -162,9 +319,7 @@ const Checkout = () => {
           <CardHeader>
             <CardTitle>Your Information</CardTitle>
             <CardDescription>
-              {isLoggedIn 
-                ? "Your information is pre-filled based on your account." 
-                : "Enter your contact and shipping information."}
+              Enter your details to complete the purchase.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -252,21 +407,17 @@ const Checkout = () => {
                 />
               </div>
             </div>
+
+            {error && (
+              <p className="text-red-500 text-sm mt-2">Error: {error}</p>
+            )}
           </CardContent>
-          <CardFooter className="justify-between">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/cart')}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Cart
-            </Button>
+          <CardFooter className="justify-end">
             <Button 
               onClick={handleNextStep}
               className="bg-gifty-500 hover:bg-gifty-600 text-white"
             >
-              Continue to Payment
-              <ArrowRight className="ml-2 h-4 w-4" />
+              Continue to Payment <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardFooter>
         </Card>
@@ -291,8 +442,8 @@ const Checkout = () => {
               className="space-y-4"
             >
               <div className="flex items-center space-x-4 rounded-md border p-4">
-                <RadioGroupItem value="cash" id="cash" />
-                <Label htmlFor="cash" className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="paypal" id="paypal" />
+                <Label htmlFor="paypal" className="flex items-center gap-2 cursor-pointer">
                   <Banknote className="h-5 w-5 text-gifty-500" />
                   <div>
                     <p className="font-medium">Cash</p>
@@ -302,8 +453,8 @@ const Checkout = () => {
               </div>
               
               <div className="flex items-center space-x-4 rounded-md border p-4">
-                <RadioGroupItem value="transfer" id="transfer" />
-                <Label htmlFor="transfer" className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="stripe" id="stripe" />
+                <Label htmlFor="stripe" className="flex items-center gap-2 cursor-pointer">
                   <Landmark className="h-5 w-5 text-gifty-500" />
                   <div>
                     <p className="font-medium">Bank Transfer</p>
@@ -369,7 +520,7 @@ const Checkout = () => {
                       />
                       <div>
                         <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-gray-500">{item.store}</p>
+                        <p className="text-sm text-gray-500">Store ID: {item.store ?? 'N/A'}</p>
                       </div>
                     </div>
                     <div className="text-right">
@@ -424,21 +575,26 @@ const Checkout = () => {
                 </div>
               </div>
             </div>
+            
+            {error && (
+              <p className="text-red-500 text-sm mt-2">Error during submission: {error}</p>
+            )}
           </CardContent>
           <CardFooter className="justify-between">
             <Button 
               variant="outline" 
               onClick={handlePreviousStep}
+              disabled={isProcessing}
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Payment
             </Button>
             <Button 
-              onClick={handleSubmitOrder}
+              onClick={handleSubmit}
               className="bg-gifty-500 hover:bg-gifty-600 text-white"
+              disabled={isProcessing}
             >
-              <Check className="mr-2 h-4 w-4" />
-              Complete Order
+              {isProcessing ? 'Processing...' : <><Check className="mr-2 h-4 w-4" /> Complete Order</>}
             </Button>
           </CardFooter>
         </Card>
