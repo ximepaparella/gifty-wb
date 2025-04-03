@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,11 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Template1, Template2, Template3, Template4, Template5 } from './templates';
-import { Mail, User } from 'lucide-react';
+import { Mail, User, Loader2 } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
-import { useStore } from '@/hooks/useStores';
-import type { Product } from '@/lib/api/types';
+import { storeService } from '@/lib/api/services';
+import type { Store } from '@/lib/api/types';
 
 export interface VoucherData {
   sender_name: string;
@@ -56,6 +56,8 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
   const { toast } = useToast();
   
   const [errors, setErrors] = useState<ValidationError[]>([]);
+  const [storeData, setStoreData] = useState<Store | null>(null);
+  const [loading, setLoading] = useState(true);
   const [voucherData, setVoucherData] = useState<VoucherData>({
     sender_name: '',
     sender_email: '',
@@ -65,15 +67,63 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
     template: '1',
     productName: product.name,
     storeName: product.store,
-    storeAddress: 'Loading store details...',
-    storeEmail: 'Loading store details...',
-    storePhone: 'Loading store details...',
-    storeSocial: 'Loading store details...',
+    storeAddress: '',
+    storeEmail: '',
+    storePhone: '',
+    storeSocial: '',
     storeLogo: '/placeholder.svg',
     expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     code: 'GIFT' + Math.random().toString(36).substring(2, 8).toUpperCase(),
     qrCode: ''
   });
+
+  // Fetch store data when component mounts
+  useEffect(() => {
+    const fetchStoreData = async () => {
+      try {
+        setLoading(true);
+        const store = await storeService.getById(product.storeId);
+        setStoreData(store);
+        
+        // Format social media links into a string
+        const socialLinks = [];
+        if (store.social.instagram) socialLinks.push(`Instagram: ${store.social.instagram}`);
+        if (store.social.facebook) socialLinks.push(`Facebook: ${store.social.facebook}`);
+        if (store.social.tiktok) socialLinks.push(`TikTok: ${store.social.tiktok}`);
+        if (store.social.youtube) socialLinks.push(`YouTube: ${store.social.youtube}`);
+        if (store.social.others?.length > 0) {
+          store.social.others.forEach(other => {
+            socialLinks.push(`${other.name}: ${other.url}`);
+          });
+        }
+        const socialString = socialLinks.join(' | ');
+        
+        // Update voucher data with store information
+        setVoucherData(prev => ({
+          ...prev,
+          storeName: store.name,
+          storeAddress: store.address || '',
+          storeEmail: store.email || '',
+          storePhone: store.phone || '',
+          storeSocial: socialString,
+          storeLogo: store.logo || '/placeholder.svg'
+        }));
+      } catch (error) {
+        console.error('Failed to fetch store data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load store information",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isOpen && product.storeId) {
+      fetchStoreData();
+    }
+  }, [isOpen, product.storeId, toast]);
 
   const validateForm = (): boolean => {
     const newErrors: ValidationError[] = [];
@@ -151,7 +201,6 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
 
   const handleContinue = () => {
     if (!validateForm()) {
-      // Show first error in toast
       if (errors.length > 0) {
         toast({
           title: "Validation Error",
@@ -169,7 +218,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
       price: product.price,
       quantity: 1,
       image: product.image,
-      store: product.store,
+      store: storeData?.name || product.store,
       storeId: product.storeId,
       voucherData: {
         senderName: voucherData.sender_name.trim(),
@@ -192,8 +241,22 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
   };
 
   const renderTemplatePreview = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin text-gifty-500" />
+        </div>
+      );
+    }
+
     const commonProps = {
-      ...voucherData
+      ...voucherData,
+      storeName: storeData?.name || voucherData.storeName,
+      storeAddress: storeData?.address || voucherData.storeAddress,
+      storeEmail: storeData?.email || voucherData.storeEmail,
+      storePhone: storeData?.phone || voucherData.storePhone,
+      storeSocial: voucherData.storeSocial,
+      storeLogo: storeData?.logo || voucherData.storeLogo,
     };
 
     switch (voucherData.template) {
