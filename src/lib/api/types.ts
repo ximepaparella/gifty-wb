@@ -86,6 +86,7 @@ export interface CreateOrderPayload {
   customerId: string;
   paymentDetails: {
     paymentId: string;
+    status: string;
     paymentStatus: string;
     paymentEmail: string;
     amount: number;

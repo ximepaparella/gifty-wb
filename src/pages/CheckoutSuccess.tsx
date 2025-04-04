@@ -35,9 +35,9 @@ const CheckoutSuccess = () => {
   
   const getPaymentMethodIcon = () => {
     switch (orderInfo.paymentMethod) {
-      case 'cash':
+      case 'stripe':
         return <Banknote className="h-5 w-5 text-gifty-500" />;
-      case 'transfer':
+      case 'paypal':
         return <Landmark className="h-5 w-5 text-gifty-500" />;
       case 'mercadopago':
         return <CreditCard className="h-5 w-5 text-gifty-500" />;
@@ -48,10 +48,10 @@ const CheckoutSuccess = () => {
   
   const getPaymentMethodName = () => {
     switch (orderInfo.paymentMethod) {
-      case 'cash':
-        return 'Cash';
-      case 'transfer':
-        return 'Bank Transfer';
+      case 'stripe':
+        return 'Stripe';
+      case 'paypal':
+        return 'Paypal';
       case 'mercadopago':
         return 'Mercado Pago';
       default:

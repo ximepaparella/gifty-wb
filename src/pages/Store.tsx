@@ -139,9 +139,6 @@ const Store = () => {
                         <span className="text-2xl font-bold text-gifty-500">
                           ${product.price}
                         </span>
-                        <span className="text-sm text-muted-foreground">
-                          {product.storeName}
-                        </span>
                       </div>
                     </div>
                   </div>
