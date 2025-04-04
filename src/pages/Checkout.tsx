@@ -34,7 +34,7 @@ interface CustomerInfo {
   country: string;
 }
 
-type PaymentMethod = 'cash' | 'transfer' | 'mercadopago';
+type PaymentMethod = 'stripe' | 'paypal' | 'mercadopago';
 
 interface CheckoutVoucherData {
   senderName: string;
@@ -56,7 +56,7 @@ const Checkout = () => {
     zipCode: '',
     country: '',
   });
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('transfer');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('stripe');
   
   const { items, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
@@ -215,6 +215,7 @@ const Checkout = () => {
 
       const paymentDetails = {
         paymentId: `mock_${Date.now()}`,
+        status: 'completed',
         paymentStatus: 'completed',
         paymentEmail: customerInfo.email,
         amount: totalPrice,
@@ -442,23 +443,23 @@ const Checkout = () => {
               className="space-y-4"
             >
               <div className="flex items-center space-x-4 rounded-md border p-4">
-                <RadioGroupItem value="paypal" id="paypal" />
-                <Label htmlFor="paypal" className="flex items-center gap-2 cursor-pointer">
-                  <Banknote className="h-5 w-5 text-gifty-500" />
+                <RadioGroupItem value="stripe" id="stripe" />
+                <Label htmlFor="stripe" className="flex items-center gap-2 cursor-pointer">
+                  <CreditCard className="h-5 w-5 text-gifty-500" />
                   <div>
-                    <p className="font-medium">Cash</p>
-                    <p className="text-sm text-gray-500">Pay at our physical store location</p>
+                    <p className="font-medium">Stripe</p>
+                    <p className="text-sm text-gray-500">Pay with credit/debit card via Stripe</p>
                   </div>
                 </Label>
               </div>
               
               <div className="flex items-center space-x-4 rounded-md border p-4">
-                <RadioGroupItem value="stripe" id="stripe" />
-                <Label htmlFor="stripe" className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="paypal" id="paypal" />
+                <Label htmlFor="paypal" className="flex items-center gap-2 cursor-pointer">
                   <Landmark className="h-5 w-5 text-gifty-500" />
                   <div>
-                    <p className="font-medium">Bank Transfer</p>
-                    <p className="text-sm text-gray-500">Pay via bank transfer (details will be provided)</p>
+                    <p className="font-medium">PayPal</p>
+                    <p className="text-sm text-gray-500">Pay via PayPal</p>
                   </div>
                 </Label>
               </div>
@@ -554,22 +555,22 @@ const Checkout = () => {
               <div>
                 <h3 className="font-semibold text-lg mb-2">Payment Method</h3>
                 <div className="text-sm">
-                  {paymentMethod === 'cash' && (
+                  {paymentMethod === 'stripe' && (
                     <div className="flex items-center gap-2">
-                      <Banknote className="h-5 w-5 text-gifty-500" />
-                      <p>Cash payment at our physical store</p>
+                      <CreditCard className="h-5 w-5 text-gifty-500" />
+                      <p>Pay with Stripe</p>
                     </div>
                   )}
-                  {paymentMethod === 'transfer' && (
+                  {paymentMethod === 'paypal' && (
                     <div className="flex items-center gap-2">
                       <Landmark className="h-5 w-5 text-gifty-500" />
-                      <p>Bank transfer (details will be sent via email)</p>
+                      <p>Pay with PayPal</p>
                     </div>
                   )}
                   {paymentMethod === 'mercadopago' && (
                     <div className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5 text-gifty-500" />
-                      <p>Mercado Pago</p>
+                      <p>Pay with Mercado Pago</p>
                     </div>
                   )}
                 </div>
