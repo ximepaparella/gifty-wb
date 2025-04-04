@@ -1,69 +1,126 @@
-# Welcome to your Lovable project
+# Gifty - Gift Voucher Platform
 
-## Project info
+A modern web application for creating and managing digital gift vouchers for small businesses.
 
-**URL**: https://lovable.dev/projects/77de1c0f-af41-4d84-b4b7-43ef7b13937e
+## Features
 
-## How can I edit this code?
+- 🎨 Beautiful voucher templates with customization options
+- 💳 Multiple payment methods integration (Stripe, PayPal, Mercado Pago)
+- 📱 Responsive design for all devices
+- 🔒 Secure checkout process
+- 📧 Instant email delivery of vouchers
+- 🛍️ User-friendly store interface
+- 🛒 Shopping cart functionality
+- 📊 Order tracking and management
 
-There are several ways of editing your application.
+## Documentation
 
-**Use Lovable**
+For detailed technical documentation about the platform's flows, implementation details, and architecture, please refer to our [Technical Documentation](./documentation.md). The documentation includes:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/77de1c0f-af41-4d84-b4b7-43ef7b13937e) and start prompting.
+- Complete flow descriptions for voucher purchase and store management
+- Technical implementation details
+- Data models and API structures
+- Security considerations
+- Performance optimizations
+- Future enhancement plans
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tech Stack
 
-**Use your preferred IDE**
+- React 18
+- TypeScript
+- Vite
+- TailwindCSS
+- Shadcn/ui
+- React Router
+- React Query
+- Axios
+- Lucide Icons
+- React Hook Form
+- Zod
+- Sonner (Toasts)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
 
-Follow these steps:
+- Node.js (v16 or higher)
+- npm or yarn
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Installation
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/gifty-wb.git
+cd gifty-wb
 ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Start the development server:
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-**Use GitHub Codespaces**
+The application will be available at `http://localhost:8080`.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Project Structure
 
-## What technologies are used for this project?
+```
+src/
+├── components/         # Reusable UI components
+│   ├── ui/            # Shadcn UI components
+│   └── templates/     # Voucher template components
+├── contexts/          # React context providers
+├── hooks/             # Custom React hooks
+├── lib/              # Utilities and API services
+│   ├── api/          # API integration
+│   └── utils/        # Helper functions
+├── pages/            # Application pages/routes
+└── types/            # TypeScript type definitions
+```
 
-This project is built with .
+## Features in Detail
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Voucher Creation
+- Multiple template designs
+- Customizable messages and styling
+- Preview functionality
+- Sender and recipient information
 
-## How can I deploy this project?
+### Shopping Cart
+- Add/remove items
+- Quantity adjustment
+- Price calculations
+- Order summary
 
-Simply open [Lovable](https://lovable.dev/projects/77de1c0f-af41-4d84-b4b7-43ef7b13937e) and click on Share -> Publish.
+### Checkout Process
+- Multi-step form
+- Customer information collection
+- Payment method selection
+- Order review
+- Success/Error handling
 
-## I want to use a custom domain - is that possible?
+### Store Management
+- Product listing
+- Product details
+- Store information
+- Social media integration
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
