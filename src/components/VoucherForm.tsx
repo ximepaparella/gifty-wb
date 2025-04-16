@@ -48,7 +48,7 @@ const VoucherForm: React.FC<VoucherFormProps> = ({ productName, storeName }) => 
     storeLogo: '/placeholder.svg',
     expirationDate: '12/31/2024',
     code: 'GIFT123456',
-    qrCode: ''
+    qrCode: 'https://qr.io/1234567890'
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

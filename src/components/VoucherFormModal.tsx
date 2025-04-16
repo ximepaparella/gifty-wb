@@ -74,7 +74,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
     storeLogo: '/placeholder.svg',
     expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     code: 'GIFT' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-    qrCode: ''
+    qrCode: 'https://www.researchgate.net/profile/Venkata-Pabolu/publication/332942465/figure/fig1/AS:763007793651712@1558926642965/QR-code-for-the-web-link.ppm'
   });
 
   // Fetch store data when component mounts
@@ -277,13 +277,13 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Personalize Your Gift Voucher</DialogTitle>
         </DialogHeader>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 py-4">
-          <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 py-4">
+          <div className="lg:col-span-3 space-y-4">
             <div>
               <Label className="flex items-center gap-2 mb-1.5">
                 <User className="h-4 w-4 text-gifty-500" />
@@ -395,7 +395,7 @@ const VoucherFormModal: React.FC<VoucherFormModalProps> = ({ isOpen, onClose, pr
             </div>
           </div>
           
-          <div>
+          <div className="lg:col-span-7">
             <h3 className="text-xl font-medium mb-4">Voucher Preview</h3>
             <div className="mt-4 rounded-lg border overflow-hidden">
               {renderTemplatePreview()}

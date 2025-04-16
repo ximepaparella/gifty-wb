@@ -105,10 +105,9 @@ const Template1: React.FC<TemplateProps> = ({
               ) : (
                 <div style={{ width: '150px', height: '150px', backgroundColor: '#333', margin: '0 auto' }}></div>
               )}
-            </div>
-            
-            <div style={{ fontSize: '14px', marginTop: '20px' }}>expiration date: {expirationDate}</div>
-            <div style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '10px', textAlign: 'right' }}>code: {code}</div>
+            </div> 
+            <div style={{ fontSize: '14px', marginTop: '20px' }}>Valido hasta: {expirationDate}</div>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', textAlign: 'right' }}>code: {code}</div>
           </div>
         </div>
       </div>
