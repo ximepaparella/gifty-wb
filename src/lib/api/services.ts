@@ -1,10 +1,10 @@
-import api from './base';
-import { Order, Product, Store, Customer, CreateOrderPayload } from './types';
+import api from "./base";
+import { Order, Product, Store, Customer, CreateOrderPayload } from "./types";
 
 export const customerService = {
-  getOrCreate: async (customerData: { 
-    fullName: string; 
-    email: string; 
+  getOrCreate: async (customerData: {
+    fullName: string;
+    email: string;
     phoneNumber: string;
     address: string;
     city: string;
@@ -12,14 +12,17 @@ export const customerService = {
     country: string;
     userId?: string | null;
   }): Promise<Customer> => {
-    const response = await api.post<{ data: Customer }>('/customers/get-or-create', customerData);
+    const response = await api.post<{ data: Customer }>(
+      "/customers/get-or-create",
+      customerData
+    );
     return response.data.data;
   },
 };
 
 export const orderService = {
   create: async (orderData: CreateOrderPayload): Promise<Order> => {
-    const response = await api.post<{ data: Order }>('/orders', orderData);
+    const response = await api.post<{ data: Order }>("/orders", orderData);
     return response.data.data;
   },
 
@@ -29,7 +32,9 @@ export const orderService = {
   },
 
   getByCustomer: async (customerId: string): Promise<Order[]> => {
-    const response = await api.get<{ data: Order[] }>(`/orders/customer/${customerId}`);
+    const response = await api.get<{ data: Order[] }>(
+      `/orders/customer/${customerId}`
+    );
     return response.data.data;
   },
 
@@ -39,14 +44,16 @@ export const orderService = {
   },
 
   redeemVoucher: async (code: string): Promise<Order> => {
-    const response = await api.post<{ data: Order }>(`/orders/voucher/${code}/redeem`);
+    const response = await api.post<{ data: Order }>(
+      `/orders/voucher/${code}/redeem`
+    );
     return response.data.data;
-  }
+  },
 };
 
 export const productService = {
   getAll: async (): Promise<Product[]> => {
-    const response = await api.get<{ data: Product[] }>('/products');
+    const response = await api.get<{ data: Product[] }>("/products");
     return response.data.data;
   },
 
@@ -56,19 +63,43 @@ export const productService = {
   },
 
   getByStore: async (storeId: string): Promise<Product[]> => {
-    const response = await api.get<{ data: Product[] }>(`/products/store/${storeId}`);
+    const response = await api.get<{ data: Product[] }>(
+      `/products/store/${storeId}`
+    );
     return response.data.data;
-  }
+  },
 };
 
 export const storeService = {
   getAll: async (): Promise<Store[]> => {
-    const response = await api.get<{ data: Store[] }>('/stores');
+    const response = await api.get<{ data: Store[] }>("/stores");
     return response.data.data;
   },
 
   getById: async (id: string): Promise<Store> => {
     const response = await api.get<{ data: Store }>(`/stores/${id}`);
     return response.data.data;
-  }
-}; 
+  },
+};
+
+export const orderPayment = {
+  mercadoPago: async (
+    orderId: string,
+    cardFormData: any,
+    amount: number
+  ): Promise<any> => {
+    const response = await api.post("/payment/process_payment", {
+      orderId,
+      token: cardFormData.token,
+      issuer_id: cardFormData.issuer_id,
+      payment_method_id: cardFormData.payment_method_id,
+      transaction_amount: amount,
+      installments: cardFormData.installments,
+      payer: {
+        email: cardFormData.payer.email,
+      },
+    });
+
+    return response.data; // acá solo devuelvo la data limpia
+  },
+};
