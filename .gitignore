@@ -53,3 +53,5 @@ logs
 *.pem
 .vercel
 .turbo
+
+.env
